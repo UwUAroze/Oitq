@@ -1,0 +1,4 @@
+name: Oitq
+version: '${version}'
+main: me.aroze.oitq.Oitq
+api-version: '1.20'
