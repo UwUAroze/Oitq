@@ -53,7 +53,7 @@ object DeathListener : Listener {
 
         victim.inventory.clear()
         victim.gameMode = GameMode.SPECTATOR
-        victim.teleport(attacker)
+        victim.spectatorTarget = attacker
 
         spawnPlayer(victim, true)
 
