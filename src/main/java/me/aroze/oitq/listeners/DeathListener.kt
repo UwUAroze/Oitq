@@ -2,6 +2,7 @@ package me.aroze.oitq.listeners
 
 import me.aroze.oitq.listeners.DeathListener.unbreakable
 import me.aroze.oitq.mm
+import me.aroze.oitq.util.MapUtil.getRandomSpawnpoint
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -31,9 +32,11 @@ object DeathListener : Listener {
         }
 
         if (attacker !is Player) return // just for the smart cast
+        if (attacker == victim) return
 
         event.setDamage(0.0)
         resetPlayer(victim)
+        spawnPlayer(victim, true)
 
         attacker.inventory.addItem(ItemStack(Material.ARROW))
         attacker.inventory.addItem(ItemStack(Material.GOLDEN_APPLE))
@@ -48,11 +51,12 @@ object DeathListener : Listener {
         Bukkit.broadcast(mm.deserialize("<#ff6378>☠ <#ffb3bf>${deather.name} <#e3bac0>got quivered by <#ffb3bf>${killer.name}"))
     }
 
-    private fun resetPlayer(player: Player) {
+    fun resetPlayer(player: Player) {
         player.health = 20.0;
         player.absorptionAmount = 0.0
         player.fireTicks = 0;
         player.freezeTicks = 0;
+        player.arrowsInBody = 0;
         player.clearActivePotionEffects()
 
         player.inventory.clear()
@@ -61,11 +65,15 @@ object DeathListener : Listener {
         player.inventory.addItem(ItemStack(Material.ARROW))
 
         player.inventory.armorContents = arrayOf(
+            ItemStack(Material.CHAINMAIL_BOOTS).unbreakable(),
             ItemStack(Material.AIR),
             ItemStack(Material.CHAINMAIL_CHESTPLATE).unbreakable(),
-            ItemStack(Material.AIR),
-            ItemStack(Material.CHAINMAIL_BOOTS).unbreakable()
+            ItemStack(Material.AIR)
         )
+    }
+
+    fun spawnPlayer(player: Player, respawn: Boolean) {
+        player.teleport(getRandomSpawnpoint()!!)
     }
 
     fun ItemStack.unbreakable(): ItemStack = this.apply {

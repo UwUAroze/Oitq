@@ -6,7 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
-val clorie = Bukkit.getPluginManager().getPlugin("Oitq") as Oitq
+val oitq = Bukkit.getPluginManager().getPlugin("Oitq") as Oitq
 val mm = MiniMessage.miniMessage()
 
 class Oitq : JavaPlugin() {
@@ -17,7 +17,7 @@ class Oitq : JavaPlugin() {
     }
 
     override fun onDisable() {
-
+        // Plugin shutdown logic
     }
 
     private fun registerListeners() {
