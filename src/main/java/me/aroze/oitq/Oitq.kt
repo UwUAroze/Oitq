@@ -1,5 +1,6 @@
 package me.aroze.oitq
 
+import me.aroze.arozeutils.minecraft.FancyPlugin
 import me.aroze.oitq.util.getClassesInPackage
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -9,14 +10,14 @@ import org.bukkit.plugin.java.JavaPlugin
 val oitq = Bukkit.getPluginManager().getPlugin("Oitq") as Oitq
 val mm = MiniMessage.miniMessage()
 
-class Oitq : JavaPlugin() {
+class Oitq : FancyPlugin() {
 
     override fun onEnable() {
         saveDefaultConfig()
         registerListeners()
     }
 
-    override fun onDisable() {
+    override fun onPluginDisable() {
         // Plugin shutdown logic
     }
 
