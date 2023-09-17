@@ -14,10 +14,10 @@ object MapUtil {
             val randomIndex = Random.nextInt(spawnpoints.size)
             val spawnpoint = spawnpoints[randomIndex]
 
-            if (spawnpoint.size >= 5) {
-                val x = spawnpoint[0] as Double
+            if (spawnpoint.size >= 6) {
+                val x = spawnpoint[0] as Double + getRandomRadius(spawnpoint)
                 val y = spawnpoint[1] as Double
-                val z = spawnpoint[2] as Double
+                val z = spawnpoint[2] as Double + getRandomRadius(spawnpoint)
                 val yaw = (spawnpoint[3] as Double).toFloat()
                 val pitch = (spawnpoint[4] as Double).toFloat()
 
@@ -27,6 +27,11 @@ object MapUtil {
 
         return null
 
+    }
+
+    private fun getRandomRadius(spawnpoint: List<*>): Double {
+        val radius = Random.nextDouble() * (spawnpoint[5] as Double)
+        return if (Random.nextBoolean()) radius else radius * -1
     }
 
 }
