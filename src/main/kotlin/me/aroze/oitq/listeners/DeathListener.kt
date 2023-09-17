@@ -59,7 +59,10 @@ object DeathListener : Listener {
 
         if (attacker is Arrow) {
             attacker = attacker.shooter as Player
-            if (attacker == victim) return
+            if (attacker == victim) {
+                event.isCancelled = true
+                return
+            }
             handleQuiveringDeath(attacker, victim)
         } else {
             if (attacker !is Player) return
