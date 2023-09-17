@@ -30,6 +30,13 @@ import kotlin.random.Random
 
 object DeathListener : Listener {
 
+    private val deathTitles = listOf(
+        "Awh you dieddd ;c",
+        "Back to the locker with you...",
+        "Gutter ball!",
+        "Gotta work on the aim..."
+    )
+
     @EventHandler
     fun onDeath(event: EntityDamageByEntityEvent) {
         val victim = event.entity
@@ -114,19 +121,12 @@ object DeathListener : Listener {
         player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 1, false, false, false))
         player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, PotionEffect.INFINITE_DURATION, 1, false, false, false))
 
-        val rand = Random.nextInt(4)
-        var theText = "";
-        if(rand == 0) {theText = "<#ff6378>☠ Awh you dieddd ;c"}
-        if(rand == 1) {theText = "<#ff6378>☠ Back to the locker with you..."}
-        if(rand == 2) {theText = "<#ff6378>☠ Gutter ball!"}
-        if(rand == 3) {theText = "<#ff6378>☠ Gotta work on the aim..."}
-
         var ticksDone = 0
         timer({
             ticksDone++
 
             val title = Title.title(
-                mm.deserialize(theText),
+                mm.deserialize("<#ff6378>☠ ${deathTitles.random()}"),
                 mm.deserialize("<#e3bac0>Respawning in <#ffb3bf>${"%.1f".format((60 - ticksDone) / 20.0)} seconds..."),
                 Title.Times.times(Duration.ofMillis(0), Duration.ofMillis(5 * 50), Duration.ofMillis(0))
             )
