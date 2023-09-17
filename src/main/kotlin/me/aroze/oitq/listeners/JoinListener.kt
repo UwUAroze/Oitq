@@ -11,7 +11,7 @@ object JoinListener : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         resetPlayer(event.player)
-        spawnPlayer(event.player, false)
+        spawnPlayer(event.player)
     }
 
 }

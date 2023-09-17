@@ -9,6 +9,7 @@ import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -68,11 +69,7 @@ object DeathListener : Listener {
 
         event.setDamage(0.0)
 
-        victim.inventory.clear()
-        victim.gameMode = GameMode.SPECTATOR
-        victim.spectatorTarget = attacker
-
-        spawnPlayer(victim, true)
+        playRespawnSequence(victim, attacker)
 
         attacker.inventory.addItem(ItemStack(Material.ARROW))
         attacker.inventory.addItem(ItemStack(Material.GOLDEN_APPLE))
@@ -81,14 +78,18 @@ object DeathListener : Listener {
         attacker.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 80, 2, false, false, false))
         attacker.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 40, 0, false, false, false))
 
+        attacker.playSound(attacker, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0f, 1.0f)
+
     }
 
     private fun handleChoppyDeath(killer: Player, deather: Player) {
         Bukkit.broadcast(mm.deserialize("<#ff6378>☠ <#ffb3bf>${deather.name} <#e3bac0>got chopped up by <#ffb3bf>${killer.name}"))
+        killer.sendActionBar(mm.deserialize("<#ffb899>\uD83D\uDDE1 <#baa59b>| <#ffdac9>You've choppied ${deather.name}"))
     }
 
     private fun handleQuiveringDeath(killer: Player, deather: Player) {
         Bukkit.broadcast(mm.deserialize("<#ff6378>☠ <#ffb3bf>${deather.name} <#e3bac0>got quivered by <#ffb3bf>${killer.name}"))
+        killer.sendActionBar(mm.deserialize("<#ffb899>\uD83C\uDFF9 <#baa59b>| <#ffdac9>You've quivered ${deather.name}"))
     }
 
     fun resetPlayer(player: Player, resetGamemode: Boolean = true, giveBackInventory: Boolean = true) {
@@ -120,17 +121,22 @@ object DeathListener : Listener {
         player.clearActivePotionEffects()
     }
 
-    fun spawnPlayer(player: Player, respawn: Boolean) {
+    fun spawnPlayer(player: Player) {
+        player.teleport(getRandomSpawnpoint()!!)
+    }
 
-        if (!respawn) {
-            player.teleport(getRandomSpawnpoint()!!)
-            return
-        }
+    private fun playRespawnSequence(player: Player, killer: Player) {
+
+        player.inventory.clear()
+        player.gameMode = GameMode.SPECTATOR
+        player.spectatorTarget = player
+        player.playSound(player, Sound.ENTITY_ALLAY_DEATH, 1.0f, 1.0f)
+        player.playSound(player, Sound.ENTITY_ALLAY_DEATH, 1.0f, 2.0f)
 
         resetPlayer(player, false, false)
 
-        player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 1, false, false, false))
-        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, PotionEffect.INFINITE_DURATION, 1, false, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, PotionEffect.INFINITE_DURATION, 0, false, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, PotionEffect.INFINITE_DURATION, 0, false, false, false))
 
         val deathTitle = deathTitles.next()
         var ticksDone = 0
@@ -149,16 +155,15 @@ object DeathListener : Listener {
                 player.clearTitle()
                 delay({
                     resetPlayer(player)
-                    player.teleport(getRandomSpawnpoint()!!)
+                    spawnPlayer(player)
                 }, 1)
             }
 
         }, 60, 1)
 
-
     }
 
-    fun ItemStack.unbreakable(): ItemStack = this.apply {
+    private fun ItemStack.unbreakable(): ItemStack = this.apply {
         itemMeta.isUnbreakable = true
     }
 
