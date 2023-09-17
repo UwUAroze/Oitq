@@ -164,7 +164,9 @@ object DeathListener : Listener {
     }
 
     private fun ItemStack.unbreakable(): ItemStack = this.apply {
-        itemMeta.isUnbreakable = true
+        val meta = itemMeta
+        meta.isUnbreakable = true
+        itemMeta = meta
     }
 
 }
